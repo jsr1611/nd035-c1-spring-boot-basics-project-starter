@@ -10,6 +10,6 @@ public class HomeController {
 
     @GetMapping
     public String gotohome(){
-        return "home";
+        return "redirect:files";
     }
 }
