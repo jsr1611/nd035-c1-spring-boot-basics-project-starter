@@ -15,9 +15,10 @@
             </div>
 
             <h1 class="display-5">Sign Up</h1>
-            <form action="#" method="POST" th:action="@{/login/signup}">
+            <input id="signupSuccess" type="hidden" th:value="${signupSuccess}">
+            <form action="#" method="POST" th:action="@{/signup}">
                 <div id="success-msg" class="alert alert-dark" th:if="${signupSuccess} ">
-                    You successfully signed up! Please continue to the <a>login</a> page.
+                     You successfully signed up! Please continue to the <a>login</a> page.
                 </div>
                 <div class="alert alert-danger" th:if="${signupError}">
                     <span th:text="${signupError}">Example Signup Error Message</span>
@@ -45,5 +46,20 @@
                 <button type="submit" class="btn btn-primary" id="buttonSignUp">Sign Up</button>
             </form>
         </div>
+
+    <script>
+        function redirectToLogin(){
+            console.log("moving to loginpage...")
+            window.location.href = "/login";
+        }
+
+        let signupSuccess = document.getElementById("signupSuccess").getAttribute("value");
+        console.log("signupSuccess: ", signupSuccess, " " + document.readyState, document.readyState === "loading");
+
+        if(document.readyState === "loading" && signupSuccess != null && signupSuccess === true){
+            console.log("signup success after page load: " + signupSuccess);
+            redirectToLogin();
+        }
+    </script>
     </body>
 </html>

@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/files")
@@ -38,6 +39,18 @@ public class FileController {
         return "home";
     }
 
+    @GetMapping("/{fileId}")
+    public String getFileById(@PathVariable("fileId") Integer fileId, Model model){
+        File file = fileService.getFileById(fileId);
+        if(file == null){
+            return "home";
+        }
+        FileDTO fileDTO = FileDTO.toDTO(file);
+        model.addAttribute("file", fileDTO);
+
+        return "home";
+    }
+
     @PostMapping
     public String postFile(@RequestParam("fileUpload") MultipartFile file, Model model) {
         // TODO: 7/8/24 file store logic here
@@ -56,4 +69,20 @@ public class FileController {
         model.addAttribute("fileList", fileList);
         return "home";
     }
+
+
+    @PostMapping("/delete")
+    public String deleteFileById(@RequestBody Map requestBody, Model model){
+
+        Integer fileId = (Integer) requestBody.get("fileId");
+        logger.info("fileId: {}", fileId);
+        Integer rowsUpdated = fileService.delete(fileId);
+        if(rowsUpdated != null && rowsUpdated > 0){
+            model.addAttribute("success", true);
+        }else {
+            model.addAttribute("error", "File deletion was unsuccessful");
+        }
+        return "home";
+    }
+
 }

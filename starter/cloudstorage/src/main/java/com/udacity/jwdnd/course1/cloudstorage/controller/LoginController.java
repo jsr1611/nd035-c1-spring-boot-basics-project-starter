@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-@RequestMapping("/login")
 public class LoginController {
 
     private Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -28,7 +27,7 @@ public class LoginController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/login")
     public String login(){
         logger.info("GET /login was hit");
         return "login";
@@ -36,7 +35,7 @@ public class LoginController {
 
     @GetMapping("/signup")
     public String signup(){
-        logger.info("GET /login/signup was hit");
+        logger.info("GET /signup was hit");
         return "signup";
     }
 

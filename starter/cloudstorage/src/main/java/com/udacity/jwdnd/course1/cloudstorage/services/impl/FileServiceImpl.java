@@ -5,14 +5,9 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
-import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sql.rowset.serial.SerialBlob;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -38,7 +33,12 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<File> getAllFilesByUsername() {
-        return fileMapper.findAllFilesByUsername(authService.getCurrentUser().getUserId());
+        try {
+            return fileMapper.findAllFilesByUsername(authService.getCurrentUser().getUserId());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -69,5 +69,16 @@ public class FileServiceImpl implements FileService {
     @Override
     public File findFileByName(String filename) {
         return fileMapper.findByName(filename, authService.getCurrentUser().getUserId());
+    }
+
+    @Override
+    public Integer delete(Integer fileId) {
+        try {
+            return fileMapper.deleteById(fileId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return -1;
+
+        }
     }
 }
