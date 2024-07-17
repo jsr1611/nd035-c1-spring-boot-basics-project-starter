@@ -5,15 +5,23 @@ import com.udacity.jwdnd.course1.cloudstorage.model.FileDTO;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -83,6 +91,25 @@ public class FileController {
             model.addAttribute("error", "File deletion was unsuccessful");
         }
         return "home";
+    }
+
+    @GetMapping("/download/{fileId}")
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable(value = "fileId") Integer fileId) {
+        File storedFile = fileService.getFileById(fileId);
+
+            if(storedFile == null){
+                throw new RuntimeException("File not found with id: " + fileId);
+            }
+                byte[] fileData = storedFile.getFileData();
+                ByteArrayInputStream bis = new ByteArrayInputStream(fileData);
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                headers.setContentDispositionFormData("attachment", storedFile.getFileName());
+                headers.setContentLength(fileData.length);
+                return ResponseEntity
+                        .ok()
+                        .headers(headers)
+                        .body(new InputStreamResource(bis));
     }
 
 }

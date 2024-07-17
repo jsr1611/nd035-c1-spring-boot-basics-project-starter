@@ -72,30 +72,30 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
+                                        <form id="fileModalForm" action="#" method="POST">
                                             <input type="hidden" name="fileId" id="file-id">
                                             <div class="form-group">
                                                 <label for="file-title" class="col-form-label">Title</label>
-                                                <input type="text" name="fileTitle" class="form-control" id="file-title" required>
+                                                <input type="text" name="fileTitle" class="form-control" id="file-title" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label for="file-type" class="col-form-label">Content type</label>
-                                                <input type="text" name="contentType" class="form-control" id="file-type" required></input>
+                                                <input type="text" name="contentType" class="form-control" id="file-type" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label for="file-size" class="col-form-label">File size</label>
-                                                <input type="text" name="fileSize" class="form-control" id="file-size" required></input>
+                                                <input type="text" name="fileSize" class="form-control" id="file-size" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label for="user-id" class="col-form-label">User ID</label>
-                                                <input type="text" name="userId" class="form-control" id="user-id" maxlength="20" required></input>
+                                                <input type="text" name="userId" class="form-control" id="user-id" maxlength="20" disabled>
                                             </div>
                                             <button id="fileSubmit" type="submit" class="d-none"></button>
                                         </form>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="$('#fileSubmit').click();">Save changes</button>
+                                        <button type="button" class="btn btn-primary" onclick="$('#fileSubmit').click();">Download</button>
                                     </div>
                                 </div>
                             </div>
@@ -242,7 +242,13 @@
                 const fileType = document.getElementById('filetype_'+fileId).getAttribute('value');
                 const fileSize = document.getElementById('filesize_'+fileId).getAttribute('value');
 
+                const fileForm = document.getElementById('fileModalForm');
+
+
                 console.log(`showFileModal: fileId: ${fileId}, userId: ${userId}`);
+
+                fileForm.action = '/files/download/' + fileId;
+                fileForm.method = "GET";
                 $('#file-id').val(fileId ? fileId : '');
                 $('#file-title').val(fileName ? fileName : '');
                 $('#file-type').val(fileType ? fileType : '');
