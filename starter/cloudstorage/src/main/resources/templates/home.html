@@ -205,8 +205,19 @@
                         <tbody>
                         <tr th:each="credential: ${credentialList}">
                             <td>
-                                <button type="button" class="btn btn-success" onclick="showCredentialModal()">Edit</button>
-                                <a class="btn btn-danger">Delete</a>
+                                <button type="button" class="btn btn-success"
+                                        th:data-credential-id="${credential.getCredentialId()}"
+                                        th:data-credential-url="${credential.getUrl()}"
+                                        th:data-credential-username="${credential.getUsername()}"
+                                        th:data-credential-password="${credential.getPassword()}"
+                                        onclick="showCredentialModalFromButton(this)"
+                                    >
+                                    Edit
+                                </button>
+                                <a class="btn btn-danger"
+                                   th:data-credential-id="${credential.getCredentialId()}"
+                                   onclick="deleteCredentialFromButton(this)"
+                                >Delete</a>
                             </td>
                             <th scope="row" th:text="${credential.getUrl()}">Example Credential URL</th>
                             <td th:text="${credential.getUsername()}">Example Credential Username</td>
@@ -385,7 +396,6 @@
             }
 
 
-
             // Function to handle note deletion from a button click
             function deleteNoteFromButton(link) {
                 const noteId = link.getAttribute('data-note-id');
@@ -416,13 +426,51 @@
 
 
 
-    // For opening the credentials modal
+            <!--  Credentials Modal related functions   -->
+            // Function to show the credential modal from a button click
+            function showCredentialModalFromButton(button) {
+                console.log("btn: ", button);
+                const credentialId = button.getAttribute('data-credential-id');
+                const url = button.getAttribute('data-credential-url');
+                const username = button.getAttribute('data-credential-username');
+                const password = button.getAttribute('data-credential-password');
+                showCredentialModal(credentialId, url, username, password);
+            }
+            // For opening the credentials modal
             function showCredentialModal(credentialId, url, username, password) {
                 $('#credential-id').val(credentialId ? credentialId : '');
                 $('#credential-url').val(url ? url : '');
                 $('#credential-username').val(username ? username : '');
                 $('#credential-password').val(password ? password : '');
                 $('#credentialModal').modal('show');
+            }
+
+            // Function to handle credential deletion from a button click
+            function deleteCredentialFromButton(button){
+                const credentialId = button.getAttribute('data-credential-id');
+                deleteCredential(credentialId);
+            }
+
+            // Function to handle credential deletion
+            function deleteCredential(credentialId) {
+            console.log("delete credential: ", credentialId);
+                fetch('/credentials/delete', {
+                    method: "POST",
+                    body: JSON.stringify({ credentialId: Number(credentialId)}),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                        "X-CSRF-TOKEN": getCsrfToken()
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("result: ", data);
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.log("error: ", error);
+                    alert("Error: ", error.data);
+                });
             }
 
 </script>
