@@ -3,7 +3,6 @@ package com.udacity.jwdnd.course1.cloudstorage.services.impl;
 import com.udacity.jwdnd.course1.cloudstorage.config.AuthenticationService;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,8 +12,8 @@ import java.util.List;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final AuthenticationService authService;
     private final FileMapper fileMapper;
+    private final AuthenticationService authService;
 
     public FileServiceImpl(AuthenticationService authService, FileMapper fileMapper){
         this.authService = authService;
@@ -23,18 +22,13 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public File getFileById(Integer id) {
-        return fileMapper.findById(id);
+        return fileMapper.findById(id, authService.getCurrentUser().getUserId());
     }
 
     @Override
-    public List<File> getFilesByContentTypeAndUsername(String contentType) {
-        return fileMapper.findAllFilesByContentTypeAndUsername(contentType, authService.getCurrentUser().getUserId());
-    }
-
-    @Override
-    public List<File> getAllFilesByUsername() {
+    public List<File> getAllFiles() {
         try {
-            return fileMapper.findAllFilesByUsername(authService.getCurrentUser().getUserId());
+            return fileMapper.findAllFiles(authService.getCurrentUser().getUserId());
         }catch (Exception e){
             e.printStackTrace();
             return null;
@@ -48,15 +42,7 @@ public class FileServiceImpl implements FileService {
             file1.setFileName(file.getOriginalFilename());
             file1.setFileSize(String.valueOf(file.getSize()));
             file1.setContentType(file.getContentType());
-            User currentUser = authService.getCurrentUser();
-            Integer userId = null;
-            if(currentUser != null){
-                userId = currentUser.getUserId();
-            }else {
-                System.out.println("User info not found. Logout and login please");
-                return -1;
-            }
-            file1.setUserId(userId);
+            file1.setUserId(authService.getCurrentUser().getUserId());
             byte[] fileData = file.getBytes();
             file1.setFileData(fileData);
             return fileMapper.insertFile(file1);
@@ -67,14 +53,9 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File findFileByName(String filename) {
-        return fileMapper.findByName(filename, authService.getCurrentUser().getUserId());
-    }
-
-    @Override
-    public Integer delete(Integer fileId) {
+    public Integer deleteById(Integer fileId) {
         try {
-            return fileMapper.deleteById(fileId);
+            return fileMapper.deleteById(fileId, authService.getCurrentUser().getUserId());
         }catch (Exception e){
             e.printStackTrace();
             return -1;

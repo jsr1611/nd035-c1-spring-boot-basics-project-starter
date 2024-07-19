@@ -17,18 +17,18 @@ public class MyErrorController implements ErrorController {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         if (status != null) {
-            Integer statusCode = Integer.valueOf(status.toString());
+            int statusCode = Integer.parseInt(status.toString());
 
             if(statusCode == HttpStatus.NOT_FOUND.value()) {
                 model.addAttribute("errorMessage", "The page you're look for was NOT FOUND");
-                return "error";
+                return "error/404";
             }
             else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                 model.addAttribute("errorMessage", "Server error happened. Our engineers are working on it now!");
-                return "error";
+                return "error/500";
             }
         }
-        return "error";
+        return "error/error";
     }
 
     @Override

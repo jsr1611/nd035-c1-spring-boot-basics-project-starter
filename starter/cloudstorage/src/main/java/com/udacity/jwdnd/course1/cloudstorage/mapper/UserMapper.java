@@ -14,9 +14,6 @@ public interface UserMapper {
     @Select("SELECT * FROM Users WHERE userId = #{userId}")
     User findById(Integer userId);
 
-    @Select("SELECT * FROM Users")
-    List<User> getAllUsers();
-
     @Insert("INSERT INTO Users (username, salt, password, firstname, lastname) VALUES (#{username}, #{salt}, #{password}" +
             ",#{firstname}, #{lastname})")
     @Options(useGeneratedKeys = true, keyProperty = "userId")
