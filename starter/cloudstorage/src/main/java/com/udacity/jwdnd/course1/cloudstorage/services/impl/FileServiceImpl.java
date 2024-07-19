@@ -62,4 +62,9 @@ public class FileServiceImpl implements FileService {
 
         }
     }
+
+    @Override
+    public File findByFilename(String originalFilename) {
+        return fileMapper.findByFilename(originalFilename, authService.getCurrentUser().getUserId());
+    }
 }

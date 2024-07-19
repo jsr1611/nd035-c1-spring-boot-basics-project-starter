@@ -81,14 +81,22 @@ public class FileController {
             model.addAttribute("errorMsg", errMsg);
             return "result";
         }
-        Integer integer = fileService.insertFile(file);
-        if (integer != null && integer > 0){
-            model.addAttribute("success", true);
-            model.addAttribute("successMsg", "File upload was successful!");
-        }
-        else{
+        File fileWithSameName = fileService.findByFilename(file.getOriginalFilename());
+        Integer integer = 0;
+        if(fileWithSameName == null){
+            integer = fileService.insertFile(file);
+
+            if (integer != null && integer > 0){
+                model.addAttribute("success", true);
+                model.addAttribute("successMsg", "File upload was successful!");
+            }
+            else{
+                model.addAttribute("error", true);
+                model.addAttribute("errorMsg", "File saving failed. Please, contact the admin.");
+            }
+        }else {
             model.addAttribute("error", true);
-            model.addAttribute("errorMsg", "File saving failed.");
+            model.addAttribute("errorMsg", "File with the same name already exists in the storage.");
         }
         return "result";
     }

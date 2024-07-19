@@ -13,4 +13,6 @@ public interface FileService {
     Integer insertFile(MultipartFile file);
 
     Integer deleteById(Integer fileId);
+
+    File findByFilename(String originalFilename);
 }
