@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import com.udacity.jwdnd.course1.cloudstorage.config.AuthenticationService;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,12 @@ import java.util.Map;
 public class CredentialController {
     private final CredentialService credService;
     private final AuthenticationService authService;
+    private final EncryptionService encryptionService;
     private final Logger logger = LoggerFactory.getLogger(CredentialController.class);
-    public CredentialController(CredentialService credService, AuthenticationService authService) {
+    public CredentialController(CredentialService credService, AuthenticationService authService, EncryptionService encryptionService) {
         this.credService = credService;
         this.authService = authService;
+        this.encryptionService = encryptionService;
     }
 
     @ModelAttribute
@@ -79,5 +82,24 @@ public class CredentialController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Collections.singletonMap("error", "Note deletion was unsuccessful"));
         }
+    }
+
+    @PostMapping("/decrypt")
+    public ResponseEntity<?> decryptCredentials(@RequestBody Map<String, String> requestBody){
+        if(authService.getCurrentUser() == null){
+            Map<String, String> data = new HashMap<>();
+            data.put("data", "Unauthorized access. Please, login and try again later.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(data);
+        }
+
+        String ckey = requestBody.get("ckey");
+        String encryptedPassword = requestBody.get("password");
+
+        if("".equals(ckey) || "".equals(encryptedPassword)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "Empty ckey or password. Please, contact admin. "));
+        }
+        String decryptedPassword = this.encryptionService.decryptValue(encryptedPassword, ckey);
+        return ResponseEntity.ok().body(Collections.singletonMap("password", decryptedPassword));
     }
 }

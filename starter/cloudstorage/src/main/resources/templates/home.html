@@ -210,6 +210,7 @@
                                         th:data-credential-url="${credential.getUrl()}"
                                         th:data-credential-username="${credential.getUsername()}"
                                         th:data-credential-password="${credential.getPassword()}"
+                                        th:data-credential-ckey="${credential.getCkey()}"
                                         onclick="showCredentialModalFromButton(this)"
                                     >
                                     Edit
@@ -404,7 +405,6 @@
 
             // Function to handle note deletion
             function deleteNote(noteId) {
-            console.log("delete note: ", noteId);
                 fetch('/notes/delete', {
                     method: "POST",
                     body: JSON.stringify({ noteId: Number(noteId)}),
@@ -429,19 +429,22 @@
             <!--  Credentials Modal related functions   -->
             // Function to show the credential modal from a button click
             function showCredentialModalFromButton(button) {
-                console.log("btn: ", button);
                 const credentialId = button.getAttribute('data-credential-id');
                 const url = button.getAttribute('data-credential-url');
                 const username = button.getAttribute('data-credential-username');
                 const password = button.getAttribute('data-credential-password');
-                showCredentialModal(credentialId, url, username, password);
+                const ckey = button.getAttribute('data-credential-ckey');
+                showCredentialModal(credentialId, url, ckey, username, password);
             }
             // For opening the credentials modal
-            function showCredentialModal(credentialId, url, username, password) {
+            async function showCredentialModal(credentialId, url, ckey, username, password) {
                 $('#credential-id').val(credentialId ? credentialId : '');
                 $('#credential-url').val(url ? url : '');
                 $('#credential-username').val(username ? username : '');
-                $('#credential-password').val(password ? password : '');
+
+                let decryptedPassword = await getDecryptedPassword(ckey, password);
+
+                $('#credential-password').val(decryptedPassword ? decryptedPassword : '');
                 $('#credentialModal').modal('show');
             }
 
@@ -472,6 +475,29 @@
                     alert("Error: ", error.data);
                 });
             }
+
+
+             function getDecryptedPassword(key, encPassword) {
+                        return fetch('/credentials/decrypt', {
+                            method: "POST",
+                            body: JSON.stringify({
+                                ckey: key,
+                                password: encPassword
+                            }),
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8",
+                                "X-CSRF-TOKEN": getCsrfToken()
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            return data.password;
+                         })
+                        .catch(error => {
+                            console.log("error: ", error);
+                            alert("Error: ", error);
+                        });
+                    }
 
 </script>
 <!--For opening the modals-->

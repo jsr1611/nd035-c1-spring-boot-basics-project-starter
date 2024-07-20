@@ -36,8 +36,11 @@ public class UserServiceImpl implements UserService {
             SecureRandom random = new SecureRandom();
             byte[] salt = new byte[16];
             random.nextBytes(salt);
+            System.out.println("salt: ");
             String encodedSalt = Base64.getEncoder().encodeToString(salt);
+//            System.out.println("encodedSalt: " + encodedSalt);
             String hashedPassword = hashService.getHashedValue(user.getPassword(), encodedSalt);
+//            System.out.println("hashedPassword: " + hashedPassword);
             return userMapper.insertUser(new User(user.getUsername(), encodedSalt, hashedPassword, user.getFirstname(), user.getLastname()));
         }
         return -1;
