@@ -2,43 +2,46 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <meta name="_csrf" content="your-csrf-token-value">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+    <meta content="your-csrf-token-value" name="_csrf">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link media="all" rel="stylesheet" th:href="@{/css/bootstrap.min.css}" type="text/css">
     <title>Home</title>
 </head>
 <body class="p-3 mb-2 bg-light text-black">
-<input type="hidden" id="page" th:value="${page}">
+<input id="page" th:value="${page}" type="hidden">
 <div class="container">
     <div id="logoutDiv">
         <form action="#" method="POST" th:action="@{/logout}">
-            <button type="submit" class="btn btn-secondary float-right">Logout</button>
+            <button class="btn btn-secondary float-right" type="submit">Logout</button>
         </form>
     </div>
     <div id="contentDiv" style="clear: right;">
         <nav style="clear: right;">
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <a class="nav-item nav-link" id="nav-files-tab" data-toggle="tab" href="#nav-files" role="tab"
-                   aria-controls="nav-files" aria-selected="true" data-url="/files">Files</a>
-                <a class="nav-item nav-link" id="nav-notes-tab" data-toggle="tab" href="#nav-notes" role="tab"
-                   aria-controls="nav-notes" aria-selected="false" data-url="/notes">Notes</a>
-                <a class="nav-item nav-link" id="nav-credentials-tab" data-toggle="tab" href="#nav-credentials"
-                   role="tab" aria-controls="nav-credentials" aria-selected="false" data-url="/credentials">Credentials</a>
+                <a aria-controls="nav-files" aria-selected="true" class="nav-item nav-link" data-toggle="tab"
+                   data-url="/files"
+                   href="#nav-files" id="nav-files-tab" role="tab">Files</a>
+                <a aria-controls="nav-notes" aria-selected="false" class="nav-item nav-link" data-toggle="tab"
+                   data-url="/notes"
+                   href="#nav-notes" id="nav-notes-tab" role="tab">Notes</a>
+                <a aria-controls="nav-credentials" aria-selected="false" class="nav-item nav-link" data-toggle="tab"
+                   data-url="/credentials" href="#nav-credentials" id="nav-credentials-tab"
+                   role="tab">Credentials</a>
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                <form id="fileUploadForm" action="#" enctype="multipart/form-data" method="POST" th:action="@{/files}">
+            <div aria-labelledby="nav-files-tab" class="tab-pane fade" id="nav-files" role="tabpanel">
+                <form action="#" enctype="multipart/form-data" id="fileUploadForm" method="POST" th:action="@{/files}">
                     <div class="container">
                         <div class="row" style="margin: 1em;">
                             <div class="col-sm-2">
                                 <label for="fileUpload">Upload a New File:</label>
                             </div>
                             <div class="col-sm-6">
-                                <input type="file" class="form-control-file" id="fileUpload" name="fileUpload">
+                                <input class="form-control-file" id="fileUpload" name="fileUpload" required type="file">
                             </div>
                             <div class="col-sm-4">
-                                <button type="submit" class="btn btn-dark" id="uploadButton">Upload</button>
+                                <button class="btn btn-dark" id="uploadButton" type="submit">Upload</button>
                             </div>
                         </div>
                     </div>
@@ -47,101 +50,94 @@
                     <table class="table table-striped" id="fileTable">
                         <thead>
                         <tr>
-                            <th style="width: 20%" scope="col"></th>
-                            <th style="width: 80%" scope="col">File Name</th>
+                            <th scope="col" style="width: 20%"></th>
+                            <th scope="col" style="width: 80%">File Name</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="file : ${fileList}">
-                            <input type="hidden" th:value="${file.getFileName()}"
-                                   th:id="'filename_' + ${file.getFileId()}"/>
-                            <input type="hidden" th:value="${file.getContentType()}"
-                                   th:id="'filetype_' + ${file.getFileId()}"/>
-                            <input type="hidden" th:value="${file.getFileSize()}"
-                                   th:id="'filesize_' + ${file.getFileId()}"/>
                             <td>
-                                <a target="_blank"
-                                   th:onclick="|showFileModal(${file.getFileId()}, ${file.getUserId()})|"
-                                   class="btn btn-success">View</a>
-                                <a class="btn btn-danger" th:data-file-id="${file.getFileId()}"
-                                   onclick="deleteFileFromButton(this)">Delete</a>
+                                <a class="btn btn-success" onclick="showFileModalButton(this)"
+                                   target="_blank"
+                                   th:data-file-id="${file.getFileId()}"
+                                   th:data-file-name="${file.getFileName()}"
+                                   th:data-file-size="${file.getFileSize()}"
+                                   th:data-file-type="${file.getContentType()}"
+                                >View</a>
+                                <a class="btn btn-danger" onclick="deleteFileFromButton(this)"
+                                   th:data-file-id="${file.getFileId()}">Delete</a>
                             </td>
                             <th scope="row" th:text="${file.getFileName()}">ExampleFile.txt</th>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="modal fade" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel"
-                     aria-hidden="true">
+                <div aria-hidden="true" aria-labelledby="fileModalLabel" class="modal fade" id="fileModal" role="dialog"
+                     tabindex="-1">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="fileModalLabel">File</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form id="fileModalForm" action="#" method="POST">
-                                    <input type="hidden" name="fileId" id="file-id">
+                                <form action="#" id="fileModalForm" method="GET">
+                                    <input id="file-id" name="fileId" type="hidden">
                                     <div class="form-group">
-                                        <label for="file-title" class="col-form-label">Title</label>
-                                        <input type="text" name="fileTitle" class="form-control" id="file-title"
-                                               disabled>
+                                        <label class="col-form-label" for="file-name">File name</label>
+                                        <input class="form-control" disabled id="file-name" name="filename"
+                                               type="text">
                                     </div>
                                     <div class="form-group">
-                                        <label for="file-type" class="col-form-label">Content type</label>
-                                        <input type="text" name="contentType" class="form-control" id="file-type"
-                                               disabled>
+                                        <label class="col-form-label" for="file-type">Content type</label>
+                                        <input class="form-control" disabled id="file-type" name="contentType"
+                                               type="text">
                                     </div>
                                     <div class="form-group">
-                                        <label for="file-size" class="col-form-label">File size</label>
-                                        <input type="text" name="fileSize" class="form-control" id="file-size" disabled>
+                                        <label class="col-form-label" for="file-size">File size</label>
+                                        <input class="form-control" disabled id="file-size" name="fileSize" type="text">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="user-id" class="col-form-label">User ID</label>
-                                        <input type="text" name="userId" class="form-control" id="user-id"
-                                               maxlength="20" disabled>
-                                    </div>
-                                    <button id="fileSubmit" type="submit" class="d-none"></button>
+                                    <button class="d-none" id="fileSubmit" type="submit"></button>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                        onclick="$('#fileSubmit').click();">Download
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-primary" data-dismiss="modal" onclick="$('#fileSubmit').click();"
+                                        type="button">Download
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                <button style="margin: 0.25em;" type="button" class="btn btn-info float-right"
-                        onclick="showNoteModal()">
+            <div aria-labelledby="nav-notes-tab" class="tab-pane fade" id="nav-notes" role="tabpanel">
+                <button class="btn btn-info float-right" onclick="showNoteModal()" style="margin: 0.25em;"
+                        type="button">
                     + Add a New Note
                 </button>
                 <div class="table-responsive">
                     <table class="table table-striped" id="userTable">
                         <thead>
                         <tr>
-                            <th style="width: 20%" scope="col"></th>
-                            <th style="width: 20%" scope="col">Title</th>
-                            <th style="width: 60%" scope="col">Description</th>
+                            <th scope="col" style="width: 20%"></th>
+                            <th scope="col" style="width: 20%">Title</th>
+                            <th scope="col" style="width: 60%">Description</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="note : ${noteList}">
                             <td>
-                                <button type="button" class="btn btn-success"
+                                <button class="btn btn-success" onclick="showNoteModalFromButton(this)"
+                                        th:data-note-description="${note.getNoteDescription()}"
                                         th:data-note-id="${note.getNoteId()}"
                                         th:data-note-title="${note.getNoteTitle()}"
-                                        th:data-note-description="${note.getNoteDescription()}"
-                                        onclick="showNoteModalFromButton(this)">
+                                        type="button">
                                     Edit
                                 </button>
-                                <a class="btn btn-danger" th:data-note-id="${note.getNoteId()}"
-                                   onclick="deleteNoteFromButton(this)">Delete</a>
+                                <a class="btn btn-danger" onclick="deleteNoteFromButton(this)"
+                                   th:data-note-id="${note.getNoteId()}">Delete</a>
                             </td>
                             <th scope="row" th:text="${note.getNoteTitle()}">Example Note Title</th>
                             <td th:text="${note.getNoteDescription()}">Example Note Description</td>
@@ -150,35 +146,36 @@
                     </table>
                 </div>
 
-                <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel"
-                     aria-hidden="true">
+                <div aria-hidden="true" aria-labelledby="noteModalLabel" class="modal fade" id="noteModal" role="dialog"
+                     tabindex="-1">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="noteModalLabel">Note</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form id="noteModalForm" action="#" method="POST" th:action="@{/notes}" th:object="${note}">
-                                    <input type="hidden" name="noteId" id="note-id">
+                                <form action="#" id="noteModalForm" method="POST" th:action="@{/notes}"
+                                      th:object="${note}">
+                                    <input id="note-id" name="noteId" type="hidden">
                                     <div class="form-group">
-                                        <label for="note-title" class="col-form-label">Title</label>
-                                        <input type="text" name="noteTitle" class="form-control" id="note-title"
-                                               maxlength="20" required>
+                                        <label class="col-form-label" for="note-title">Title</label>
+                                        <input class="form-control" id="note-title" maxlength="20" name="noteTitle"
+                                               required type="text">
                                     </div>
                                     <div class="form-group">
-                                        <label for="note-description" class="col-form-label">Description</label>
-                                        <textarea class="form-control" name="noteDescription" id="note-description"
-                                                  rows="5" maxlength="1000" required></textarea>
+                                        <label class="col-form-label" for="note-description">Description</label>
+                                        <textarea class="form-control" id="note-description" maxlength="1000"
+                                                  name="noteDescription" required rows="5"></textarea>
                                     </div>
-                                    <button id="noteSubmit" type="submit" class="d-none"></button>
+                                    <button class="d-none" id="noteSubmit" type="submit"></button>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" onclick="$('#noteSubmit').click();">Save
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-primary" onclick="$('#noteSubmit').click();" type="button">Save
                                     changes
                                 </button>
                             </div>
@@ -186,38 +183,38 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
-                <button style="margin: 0.25em;" type="button" class="btn btn-info float-right"
-                        onclick="showCredentialModal()">
+            <div aria-labelledby="nav-credentials-tab" class="tab-pane fade" id="nav-credentials" role="tabpanel">
+                <button class="btn btn-info float-right" onclick="showCredentialModal()" style="margin: 0.25em;"
+                        type="button">
                     + Add a New Credential
                 </button>
 
                 <div class="table-responsive">
-                    <table class="table table-striped" th:object="${credentialList}" id="credentialTable">
+                    <table class="table table-striped" id="credentialTable" th:object="${credentialList}">
                         <thead>
                         <tr>
-                            <th style="width: 20%" scope="col"></th>
-                            <th style="width: 35%" scope="col">URL</th>
-                            <th style="width: 20%" scope="col">Username</th>
-                            <th style="width: 25%" scope="col">Password</th>
+                            <th scope="col" style="width: 20%"></th>
+                            <th scope="col" style="width: 35%">URL</th>
+                            <th scope="col" style="width: 20%">Username</th>
+                            <th scope="col" style="width: 25%">Password</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="credential: ${credentialList}">
                             <td>
-                                <button type="button" class="btn btn-success"
+                                <button class="btn btn-success" onclick="showCredentialModalFromButton(this)"
+                                        th:data-credential-ckey="${credential.getCkey()}"
                                         th:data-credential-id="${credential.getCredentialId()}"
+                                        th:data-credential-password="${credential.getPassword()}"
                                         th:data-credential-url="${credential.getUrl()}"
                                         th:data-credential-username="${credential.getUsername()}"
-                                        th:data-credential-password="${credential.getPassword()}"
-                                        th:data-credential-ckey="${credential.getCkey()}"
-                                        onclick="showCredentialModalFromButton(this)"
-                                    >
+                                        type="button"
+                                >
                                     Edit
                                 </button>
                                 <a class="btn btn-danger"
-                                   th:data-credential-id="${credential.getCredentialId()}"
                                    onclick="deleteCredentialFromButton(this)"
+                                   th:data-credential-id="${credential.getCredentialId()}"
                                 >Delete</a>
                             </td>
                             <th scope="row" th:text="${credential.getUrl()}">Example Credential URL</th>
@@ -228,40 +225,42 @@
                     </table>
                 </div>
 
-                <div class="modal fade" id="credentialModal" tabindex="-1" role="dialog"
-                     aria-labelledby="credentialModalLabel" aria-hidden="true">
+                <div aria-hidden="true" aria-labelledby="credentialModalLabel" class="modal fade" id="credentialModal"
+                     role="dialog" tabindex="-1">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="credentialModalLabel">Credential</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form id="credentialModalForm" action="#" method="POST">
-                                    <input type="hidden" name="credentialId" id="credential-id">
+                                <form action="#" id="credentialModalForm" method="POST">
+                                    <input id="credential-id" name="credentialId" type="hidden">
                                     <div class="form-group">
-                                        <label for="credential-url" class="col-form-label">URL</label>
-                                        <input type="text" name="url" class="form-control" id="credential-url"
-                                               maxlength="100" required>
+                                        <label class="col-form-label" for="credential-url">URL</label>
+                                        <input class="form-control" id="credential-url" maxlength="100" name="url"
+                                               required type="text">
                                     </div>
                                     <div class="form-group">
-                                        <label for="credential-username" class="col-form-label">Username</label>
-                                        <input type="text" name="username" class="form-control" id="credential-username"
-                                               maxlength="30" required>
+                                        <label class="col-form-label" for="credential-username">Username</label>
+                                        <input class="form-control" id="credential-username" maxlength="30"
+                                               name="username"
+                                               required type="text">
                                     </div>
                                     <div class="form-group">
-                                        <label for="credential-password" class="col-form-label">Password</label>
-                                        <input type="text" name="password" class="form-control" id="credential-password"
-                                               maxlength="30" required>
+                                        <label class="col-form-label" for="credential-password">Password</label>
+                                        <input class="form-control" id="credential-password" maxlength="30"
+                                               name="password"
+                                               required type="text">
                                     </div>
-                                    <button id="credentialSubmit" type="submit" class="d-none"></button>
+                                    <button class="d-none" id="credentialSubmit" type="submit"></button>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-primary" onclick="$('#credentialSubmit').click();" type="button">
                                     Save changes
                                 </button>
                             </div>
@@ -279,225 +278,235 @@
 
 
 <script type="text/javascript">
-             <!--  Tab activation  -->
-            document.addEventListener('DOMContentLoaded', (event) => {
-                const tabs = document.querySelectorAll('.nav-item.nav-link');
+    <!--  Tab activation  -->
+   document.addEventListener('DOMContentLoaded', (event) => {
+       const tabs = document.querySelectorAll('.nav-item.nav-link');
 
-                // Function to handle tab navigation
-                const handleTabClick = (page) => {
-                    window.location.href = `/` + page;
-                };
+       // Function to handle tab navigation
+       const handleTabClick = (page) => {
+           window.location.href = `/` + page;
+       };
 
-                // Add click event listeners to tabs
-                tabs.forEach(tab => {
-                    tab.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const page = this.getAttribute('href').substring(1).replace(/^nav-/, '');
-                        handleTabClick(page);
-                    });
-                });
+       // Add click event listeners to tabs
+       tabs.forEach(tab => {
+           tab.addEventListener('click', function(e) {
+               e.preventDefault();
+               const page = this.getAttribute('href').substring(1).replace(/^nav-/, '');
+               handleTabClick(page);
+           });
+       });
 
-                 // Load the correct tab on page load based on URL
-                const url = window.location.pathname;
-                const page = url.split('/').pop();
+        // Load the correct tab on page load based on URL
+       const url = window.location.pathname;
+       const page = url.split('/').pop();
 
-                if (page) {
-                    // Ensure the correct tab is activated
-                    const tabToActivate = document.querySelector(`#nav-${page}-tab`);
-                    if (tabToActivate) {
-                        const tabContentToShow = document.querySelector(`#nav-${page}`);
-                        const tabContents = document.querySelectorAll('.tab-pane');
-                        tabContents.forEach(content => content.classList.remove('show', 'active'));
-                        tabContentToShow.classList.add('show', 'active');
-                        tabs.forEach(t => t.classList.remove('active'));
-                        tabToActivate.classList.add('active');
-                    }
-                }
-            });
+       if (page) {
+           // Ensure the correct tab is activated
+           const tabToActivate = document.querySelector(`#nav-${page}-tab`);
+           if (tabToActivate) {
+               const tabContentToShow = document.querySelector(`#nav-${page}`);
+               const tabContents = document.querySelectorAll('.tab-pane');
+               tabContents.forEach(content => content.classList.remove('show', 'active'));
+               tabContentToShow.classList.add('show', 'active');
+               tabs.forEach(t => t.classList.remove('active'));
+               tabToActivate.classList.add('active');
+           }
+       }
+   });
 
-            <!--   File Modal related functions    -->
-            function showFileModal(fileId, userId){
-                const fileName = document.getElementById('filename_'+fileId).getAttribute('value');
-                console.log('filename: ', fileName);
-                const fileType = document.getElementById('filetype_'+fileId).getAttribute('value');
-                const fileSize = document.getElementById('filesize_'+fileId).getAttribute('value');
+   <!--   File Modal related functions    -->
 
-                const fileForm = document.getElementById('fileModalForm');
+   function showFileModalButton(file){
+        let fileId = file.getAttribute('data-file-id');
+        let filename = file.getAttribute('data-file-name');
+        let contentType = file.getAttribute('data-file-type');
+        let fileSize = file.getAttribute('data-file-size');
+        showFileModal(fileId, filename, contentType, fileSize);
+   }
 
-                console.log(`showFileModal: fileId: ${fileId}, userId: ${userId}`);
+   function showFileModal(fileId, fileName, fileType, fileSize){
+       let fileForm = document.getElementById('fileModalForm');
 
-                fileForm.action = '/files/download/' + fileId;
-                fileForm.method = "GET";
-                $('#file-id').val(fileId ? fileId : '');
-                $('#file-title').val(fileName ? fileName : '');
-                $('#file-type').val(fileType ? fileType : '');
-                $('#file-size').val(fileSize ? ((Number(fileSize)/1024.0).toFixed(1) + " MB") : '');
-                $('#user-id').val(userId ? userId : '');
-                $('#fileModal').modal('show');
-            }
+       fileForm.action = '/files/download/' + fileId;
+       $('#file-id').val(fileId ? fileId : '');
+       $('#file-name').val(fileName ? fileName : '');
+       $('#file-type').val(fileType ? fileType : '');
+       fileSize = Number(fileSize);
+       let fileSizeFormatted = "";
+       if(fileSize > (1024*1024)){
+        fileSizeFormatted = (fileSize/(1024.0 * 1024.0)).toFixed(1) + " MB";
+       }else if(fileSize > 1024){
+        fileSizeFormatted = (fileSize / 1024.0).toFixed(1) + " KB";
+       }else if(fileSize > 0){
+        fileSizeFormatted = fileSize + " Byte(s)";
+       }
+       $('#file-size').val(fileSizeFormatted ? fileSizeFormatted : '');
+       $('#fileModal').modal('show');
+   }
 
-            <!--  File size validator   -->
-            document.getElementById('fileUploadForm').addEventListener('submit', function (event) {
-                const fileInput = document.getElementById('fileUpload');
-                const file = fileInput.files[0];
-                if (file && file.size > 10485760) { // 10MB limit
-                    event.preventDefault();
-                    alert('File size exceeds 10MB. Please choose a smaller file.');
-                }
-            });
+   <!--  File size validator   -->
+   document.getElementById('fileUploadForm').addEventListener('submit', function (event) {
+       let fileInput = document.getElementById('fileUpload');
+       const file = fileInput.files[0];
+       if (file && file.size > 10485760) { // 10MB limit
+           event.preventDefault();
+           alert('File size exceeds 10MB. Please choose a smaller file.');
+       }
+   });
 
-            <!-- CSRF token -->
-           function getCsrfToken() {
-                return document.querySelector('meta[name="_csrf"]').getAttribute('content');
-            }
+   <!-- CSRF token -->
+  function getCsrfToken() {
+       return document.querySelector('meta[name="_csrf"]').getAttribute('content');
+   }
 
-            // Function to handle file deletion from a button click
-            function deleteFileFromButton(link) {
-                const fileId = link.getAttribute('data-file-id');
-                deleteFile(fileId);
-            }
+   // Function to handle file deletion from a button click
+   function deleteFileFromButton(link) {
+       const fileId = link.getAttribute('data-file-id');
+       deleteFile(fileId);
+   }
 
-            // Function to handle file deletion
-            function deleteFile(fileId) {
-            console.log("delete file: ", fileId);
-                fetch('/files/delete', {
-                    method: "POST",
-                    body: JSON.stringify({ fileId: Number(fileId)}),
-                    headers: {
-                        "Content-type": "application/json; charset=UTF-8",
-                        "X-CSRF-TOKEN": getCsrfToken()
-                    }
+   // Function to handle file deletion
+   function deleteFile(fileId) {
+   console.log("delete file: ", fileId);
+       fetch('/files/delete', {
+           method: "POST",
+           body: JSON.stringify({ fileId: Number(fileId)}),
+           headers: {
+               "Content-type": "application/json; charset=UTF-8",
+               "X-CSRF-TOKEN": getCsrfToken()
+           }
+       })
+       .then(response => response.json())
+       .then(data => {
+           console.log("result: ", data);
+           window.location.reload();
+       })
+       .catch(error => {
+           console.log("error: ", error);
+           alert("Error: ", error.data);
+       });
+   }
+
+   <!--  Note Modal related functions   -->
+   // Function to show the note modal from a button click
+   function showNoteModalFromButton(button) {
+       console.log("btn: ", button);
+       const noteId = button.getAttribute('data-note-id');
+       const noteTitle = button.getAttribute('data-note-title');
+       const noteDescription = button.getAttribute('data-note-description');
+       showNoteModal(noteId, noteTitle, noteDescription);
+   }
+   // For opening the note modal
+   function showNoteModal(noteId, noteTitle, noteDescription) {
+       $('#note-id').val(noteId ? noteId : '');
+       $('#note-title').val(noteTitle ? noteTitle : '');
+       $('#note-description').val(noteDescription ? noteDescription : '');
+       $('#noteModal').modal('show');
+   }
+
+
+   // Function to handle note deletion from a button click
+   function deleteNoteFromButton(link) {
+       const noteId = link.getAttribute('data-note-id');
+       deleteNote(noteId);
+   }
+
+   // Function to handle note deletion
+   function deleteNote(noteId) {
+       fetch('/notes/delete', {
+           method: "POST",
+           body: JSON.stringify({ noteId: Number(noteId)}),
+           headers: {
+               "Content-type": "application/json; charset=UTF-8",
+               "X-CSRF-TOKEN": getCsrfToken()
+           }
+       })
+       .then(response => response.json())
+       .then(data => {
+           console.log("result: ", data);
+           window.location.reload();
+       })
+       .catch(error => {
+           console.log("error: ", error);
+           alert("Error: ", error.data);
+       });
+   }
+
+
+
+   <!--  Credentials Modal related functions   -->
+   // Function to show the credential modal from a button click
+   function showCredentialModalFromButton(button) {
+       const credentialId = button.getAttribute('data-credential-id');
+       const url = button.getAttribute('data-credential-url');
+       const username = button.getAttribute('data-credential-username');
+       const password = button.getAttribute('data-credential-password');
+       const ckey = button.getAttribute('data-credential-ckey');
+       showCredentialModal(credentialId, url, ckey, username, password);
+   }
+   // For opening the credentials modal
+   async function showCredentialModal(credentialId, url, ckey, username, password) {
+       $('#credential-id').val(credentialId ? credentialId : '');
+       $('#credential-url').val(url ? url : '');
+       $('#credential-username').val(username ? username : '');
+       let decryptedPassword = "";
+       if(password && ckey){
+          decryptedPassword = await getDecryptedPassword(ckey, password);
+       }
+       $('#credential-password').val(decryptedPassword ? decryptedPassword : '');
+       $('#credentialModal').modal('show');
+   }
+
+   // Function to handle credential deletion from a button click
+   function deleteCredentialFromButton(button){
+       const credentialId = button.getAttribute('data-credential-id');
+       deleteCredential(credentialId);
+   }
+
+   // Function to handle credential deletion
+   function deleteCredential(credentialId) {
+   console.log("delete credential: ", credentialId);
+       fetch('/credentials/delete', {
+           method: "POST",
+           body: JSON.stringify({ credentialId: Number(credentialId)}),
+           headers: {
+               "Content-type": "application/json; charset=UTF-8",
+               "X-CSRF-TOKEN": getCsrfToken()
+           }
+       })
+       .then(response => response.json())
+       .then(data => {
+           console.log("result: ", data);
+           window.location.reload();
+       })
+       .catch(error => {
+           console.log("error: ", error);
+           alert("Error: ", error.data);
+       });
+   }
+
+
+    function getDecryptedPassword(key, encPassword) {
+               return fetch('/credentials/decrypt', {
+                   method: "POST",
+                   body: JSON.stringify({
+                       ckey: key,
+                       password: encPassword
+                   }),
+                   headers: {
+                       "Content-type": "application/json; charset=UTF-8",
+                       "X-CSRF-TOKEN": getCsrfToken()
+                   }
+               })
+               .then(response => response.json())
+               .then(data => {
+                   return data.password;
                 })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("result: ", data);
-                    window.location.reload();
-                })
-                .catch(error => {
-                    console.log("error: ", error);
-                    alert("Error: ", error.data);
-                });
-            }
-
-            <!--  Note Modal related functions   -->
-            // Function to show the note modal from a button click
-            function showNoteModalFromButton(button) {
-                console.log("btn: ", button);
-                const noteId = button.getAttribute('data-note-id');
-                const noteTitle = button.getAttribute('data-note-title');
-                const noteDescription = button.getAttribute('data-note-description');
-                showNoteModal(noteId, noteTitle, noteDescription);
-            }
-            // For opening the note modal
-            function showNoteModal(noteId, noteTitle, noteDescription) {
-                $('#note-id').val(noteId ? noteId : '');
-                $('#note-title').val(noteTitle ? noteTitle : '');
-                $('#note-description').val(noteDescription ? noteDescription : '');
-                $('#noteModal').modal('show');
-            }
-
-
-            // Function to handle note deletion from a button click
-            function deleteNoteFromButton(link) {
-                const noteId = link.getAttribute('data-note-id');
-                deleteNote(noteId);
-            }
-
-            // Function to handle note deletion
-            function deleteNote(noteId) {
-                fetch('/notes/delete', {
-                    method: "POST",
-                    body: JSON.stringify({ noteId: Number(noteId)}),
-                    headers: {
-                        "Content-type": "application/json; charset=UTF-8",
-                        "X-CSRF-TOKEN": getCsrfToken()
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("result: ", data);
-                    window.location.reload();
-                })
-                .catch(error => {
-                    console.log("error: ", error);
-                    alert("Error: ", error.data);
-                });
-            }
-
-
-
-            <!--  Credentials Modal related functions   -->
-            // Function to show the credential modal from a button click
-            function showCredentialModalFromButton(button) {
-                const credentialId = button.getAttribute('data-credential-id');
-                const url = button.getAttribute('data-credential-url');
-                const username = button.getAttribute('data-credential-username');
-                const password = button.getAttribute('data-credential-password');
-                const ckey = button.getAttribute('data-credential-ckey');
-                showCredentialModal(credentialId, url, ckey, username, password);
-            }
-            // For opening the credentials modal
-            async function showCredentialModal(credentialId, url, ckey, username, password) {
-                $('#credential-id').val(credentialId ? credentialId : '');
-                $('#credential-url').val(url ? url : '');
-                $('#credential-username').val(username ? username : '');
-
-                let decryptedPassword = await getDecryptedPassword(ckey, password);
-
-                $('#credential-password').val(decryptedPassword ? decryptedPassword : '');
-                $('#credentialModal').modal('show');
-            }
-
-            // Function to handle credential deletion from a button click
-            function deleteCredentialFromButton(button){
-                const credentialId = button.getAttribute('data-credential-id');
-                deleteCredential(credentialId);
-            }
-
-            // Function to handle credential deletion
-            function deleteCredential(credentialId) {
-            console.log("delete credential: ", credentialId);
-                fetch('/credentials/delete', {
-                    method: "POST",
-                    body: JSON.stringify({ credentialId: Number(credentialId)}),
-                    headers: {
-                        "Content-type": "application/json; charset=UTF-8",
-                        "X-CSRF-TOKEN": getCsrfToken()
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("result: ", data);
-                    window.location.reload();
-                })
-                .catch(error => {
-                    console.log("error: ", error);
-                    alert("Error: ", error.data);
-                });
-            }
-
-
-             function getDecryptedPassword(key, encPassword) {
-                        return fetch('/credentials/decrypt', {
-                            method: "POST",
-                            body: JSON.stringify({
-                                ckey: key,
-                                password: encPassword
-                            }),
-                            headers: {
-                                "Content-type": "application/json; charset=UTF-8",
-                                "X-CSRF-TOKEN": getCsrfToken()
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            return data.password;
-                         })
-                        .catch(error => {
-                            console.log("error: ", error);
-                            alert("Error: ", error);
-                        });
-                    }
+               .catch(error => {
+                   console.log("error: ", error);
+                   alert("Error: ", error);
+               });
+           }
 
 </script>
 <!--For opening the modals-->

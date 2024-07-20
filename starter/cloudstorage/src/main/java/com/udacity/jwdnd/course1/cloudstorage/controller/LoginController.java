@@ -43,20 +43,20 @@ public class LoginController {
         logger.info("POST /signup was hit with user data: {}", user.toString());
         String signupError = null;
         if (userService.getUserByUsername(user.getUsername()) != null) {
-            signupError = "The username already exists. Username: [" + user.getUsername() + "]";
+            signupError = "The username already exists. Username: " + user.getUsername();
+            model.addAttribute("signupError", signupError);
+        return "signup";
         }
 
-        if (signupError == null) {
             Integer result = userService.insertUser(user);
             if (result > 0) {
                 model.addAttribute("signupSuccess", true);
                 return "/login";
             } else {
-                model.addAttribute("signupError", "There was an error signing you up. Please try again.");
+                model.addAttribute("error", true);
+                model.addAttribute("errorMsg", "There was an error signing you up. Please, try again later.");
             }
-        }
-        return "/signup";
-
+        return "result";
     }
 
     @GetMapping("/logout")

@@ -43,20 +43,5 @@
                 <button type="submit" class="btn btn-primary" id="buttonSignUp">Sign Up</button>
             </form>
         </div>
-
-    <script>
-        function redirectToLogin(){
-            console.log("moving to loginpage...")
-            window.location.href = "/login";
-        }
-
-        let signupSuccess = document.getElementById("signupSuccess").getAttribute("value");
-        console.log("signupSuccess: ", signupSuccess, " " + document.readyState, document.readyState === "loading");
-
-        if(document.readyState === "loading" && signupSuccess != null && signupSuccess === true){
-            console.log("signup success after page load: " + signupSuccess);
-            redirectToLogin();
-        }
-    </script>
     </body>
 </html>

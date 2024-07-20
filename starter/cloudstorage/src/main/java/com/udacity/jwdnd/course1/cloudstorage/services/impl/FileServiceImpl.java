@@ -40,11 +40,11 @@ public class FileServiceImpl implements FileService {
         try {
             File file1 = new File();
             file1.setFileName(file.getOriginalFilename());
-            file1.setFileSize(String.valueOf(file.getSize()));
             file1.setContentType(file.getContentType());
             file1.setUserId(authService.getCurrentUser().getUserId());
             byte[] fileData = file.getBytes();
             file1.setFileData(fileData);
+            file1.setFileSize(String.valueOf(file.getSize()));
             return fileMapper.insertFile(file1);
         }catch (Exception e){
             e.printStackTrace();
