@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -66,5 +67,17 @@ public class LoginController {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
         return "redirect:/login?logout";
+    }
+
+    @PostConstruct
+    public void insertTestUser(){
+        String username = "test";
+        String password = "test";
+        String firstname = "admin";
+        String lastname = "test";
+
+        User testUser = new User(username, "", password, firstname, lastname);
+        userService.insertUser(testUser);
+        logger.info("Test user was successfully added");
     }
 }

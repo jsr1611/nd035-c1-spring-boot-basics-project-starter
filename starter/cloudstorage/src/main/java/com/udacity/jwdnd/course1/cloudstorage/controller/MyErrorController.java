@@ -20,11 +20,11 @@ public class MyErrorController implements ErrorController {
             int statusCode = Integer.parseInt(status.toString());
 
             if(statusCode == HttpStatus.NOT_FOUND.value()) {
-                model.addAttribute("errorMessage", "The page you're look for was NOT FOUND");
+                model.addAttribute("errorMessage", "The page you're look for was not found.");
                 return "error/404";
             }
             else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                model.addAttribute("errorMessage", "Server error happened. Our engineers are working on it now!");
+                model.addAttribute("errorMessage", "Server error occurred. Our engineers are working on it now!");
                 return "error/500";
             }
         }

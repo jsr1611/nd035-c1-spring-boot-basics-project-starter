@@ -24,13 +24,6 @@ public class HomeController {
         if(principal == null || authService.getCurrentUser() == null){
             return "redirect:/login";
         }
-        if(model.containsAttribute("page")){
-            if (Objects.equals(model.getAttribute("page"), "notes")) {
-                return "redirect:notes";
-            } else if (Objects.equals(model.getAttribute("page"), "credentials")) {
-                return "redirect:credentials";
-            }
-        }
-        return "redirect:files";
+        return "home";
     }
 }

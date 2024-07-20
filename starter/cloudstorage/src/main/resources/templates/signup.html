@@ -18,7 +18,7 @@
             <input id="signupSuccess" type="hidden" th:value="${signupSuccess}">
             <form action="#" method="POST" th:action="@{/signup}">
                 <div class="alert alert-dark" th:if="${signupSuccess} " id="success-msg">
-                    You successfully signed up! Please <a>log in</a> here.
+                    You successfully signed up! Redirecting to login page in 1 sec...
                 </div>
                 <div class="alert alert-danger" th:if="${signupError}" id="error-msg">
                     <span th:text="${signupError}">Example Signup Error Message</span>
@@ -53,7 +53,7 @@
             if(signupSuccess){
             setTimeout(function() {
                 window.location.href = "/login";
-                }, 1500);
+                }, 1000);
             }
         });
 
