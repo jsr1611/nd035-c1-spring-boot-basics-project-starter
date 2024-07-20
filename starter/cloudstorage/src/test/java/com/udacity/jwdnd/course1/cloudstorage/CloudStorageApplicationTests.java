@@ -9,6 +9,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -16,6 +18,7 @@ import java.io.File;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
 
+	private static final Logger log = LoggerFactory.getLogger(CloudStorageApplicationTests.class);
 	@LocalServerPort
 	private int port;
 
@@ -81,12 +84,15 @@ class CloudStorageApplicationTests {
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("buttonSignUp")));
 		WebElement buttonSignUp = driver.findElement(By.id("buttonSignUp"));
 		buttonSignUp.click();
-
 		/* Check that the sign up was successful. 
 		// You may have to modify the element "success-msg" and the sign-up 
 		// success message below depening on the rest of your code.
 		*/
+		log.info("success-msg: {}", driver.findElement(By.id("success-msg")).getText());
 		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
+
+		webDriverWait.until(ExpectedConditions.titleContains("Login"));
+
 	}
 
 	
@@ -132,9 +138,11 @@ class CloudStorageApplicationTests {
 	 */
 	@Test
 	public void testRedirection() {
+
 		// Create a test account
 		doMockSignUp("Redirection","Test","RT","123");
-		
+
+		log.info("url: {}", driver.getCurrentUrl());
 		// Check if we have been redirected to the log in page.
 		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
 	}

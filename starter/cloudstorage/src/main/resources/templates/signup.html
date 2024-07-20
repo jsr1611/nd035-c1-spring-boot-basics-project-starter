@@ -17,7 +17,10 @@
             <h1 class="display-5">Sign Up</h1>
             <input id="signupSuccess" type="hidden" th:value="${signupSuccess}">
             <form action="#" method="POST" th:action="@{/signup}">
-                <div class="alert alert-danger" th:if="${signupError}">
+                <div class="alert alert-dark" th:if="${signupSuccess} " id="success-msg">
+                    You successfully signed up! Please <a>log in</a> here.
+                </div>
+                <div class="alert alert-danger" th:if="${signupError}" id="error-msg">
                     <span th:text="${signupError}">Example Signup Error Message</span>
                 </div>
                 <div class="form-row">
@@ -43,5 +46,17 @@
                 <button type="submit" class="btn btn-primary" id="buttonSignUp">Sign Up</button>
             </form>
         </div>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let signupSuccess = document.getElementById("success-msg");
+            if(signupSuccess){
+            setTimeout(function() {
+                window.location.href = "/login";
+                }, 1500);
+            }
+        });
+
+    </script>
     </body>
 </html>

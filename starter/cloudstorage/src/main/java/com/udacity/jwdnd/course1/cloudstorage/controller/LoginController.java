@@ -51,7 +51,7 @@ public class LoginController {
             Integer result = userService.insertUser(user);
             if (result > 0) {
                 model.addAttribute("signupSuccess", true);
-                return "/login";
+                return "signup";
             } else {
                 model.addAttribute("error", true);
                 model.addAttribute("errorMsg", "There was an error signing you up. Please, try again later.");
