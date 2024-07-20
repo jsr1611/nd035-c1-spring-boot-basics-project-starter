@@ -126,3 +126,17 @@ You aren't required to understand hashing or encryption and that's why your tech
 [Encryption](https://en.wikipedia.org/wiki/Encryption)
 
 All of us here at Super*Duper*Drive wish you good luck with the project!
+
+
+
+## Some use cases with screenshots
+- Validation in action
+![Validation in action](img.png)
+
+
+- Credential input process
+![img_1.png](img_1.png)
+
+- Credential view with encrypted password
+![img_2.png](img_2.png)
+

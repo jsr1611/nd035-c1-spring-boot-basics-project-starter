@@ -278,7 +278,7 @@ class CloudStorageApplicationTests {
 
         WebElement noteSubmitButton = driver.findElement(By.id("noteSaveButton"));
         noteSubmitButton.click();
-        webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-table-body")));
+        webDriverWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("noteModal")));
     }
 
     private void doGoToNotesTab() {
@@ -342,16 +342,16 @@ class CloudStorageApplicationTests {
 
         // add mock note
         String noteTitle = "To Do List";
-        String noteDescription = "1. Write failing tests. \n2. Then implement API that passes those tests.";
+        String noteDescription = "1. Write failing tests. 2. Then implement API that passes those tests.";
         doMockNoteCreation(noteTitle, noteDescription);
         // edit existing note 1
         List<WebElement> notes = getNotes();
 
         if (!notes.isEmpty()) {
             String noteTitleBefore = notes.get(0).findElement(By.className("note-titles")).getText();
-            log.info("Note title before: {}", noteTitleBefore);
+
             String noteDescBefore = notes.get(0).findElement(By.className("note-descriptions")).getText();
-            log.info("Note description before: {}", noteDescBefore);
+
 
             //click on edit button
             WebElement noteEditButton = notes.get(0).findElement(By.className("note-edit-buttons"));
@@ -362,20 +362,24 @@ class CloudStorageApplicationTests {
             webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("noteModal")));
 
             //edit note
-            noteTitle = "To Do List Updated";
-            noteDescription = "1. Write failing tests. \n2. Then implement API that passes those tests.\n3. Submit work on time!";
-            doMockNoteCreation(noteTitle, noteDescription);
+            String noteTitleUpd = "To Do List Updated";
+            String noteDescriptionUpd = "1. Write failing tests. 2. Then implement API that passes those tests. 3. Submit work on time!";
+            doMockNoteCreation(noteTitleUpd, noteDescriptionUpd);
 
 
-            WebElement lastNoteEl = getNotes().get(notes.size() - 1);
+            String noteTitleAfter = getNotes().get(notes.size() - 1).findElement(By.className("note-titles")).getText();
+            String noteDescAfter = getNotes().get(notes.size() - 1).findElement(By.className("note-descriptions")).getText();
 
-            String noteTitleAfter = lastNoteEl.findElement(By.className("note-titles")).getText();
+            log.info("Note title before: {}", noteTitleBefore);
+            log.info("Note description before: {}", noteDescBefore);
+
             log.info("Note title after: {}", noteTitleAfter);
-            String noteDescAfter = lastNoteEl.findElement(By.className("note-descriptions")).getText();
             log.info("Note description after: {}", noteDescAfter);
 
-            Assertions.assertNotEquals(noteTitleBefore, noteTitleAfter);
-            Assertions.assertNotEquals(noteDescBefore, noteDescAfter);
+            Assertions.assertEquals(noteTitleUpd.length(), noteTitleAfter.length());
+            Assertions.assertEquals(noteDescriptionUpd.length(), noteDescAfter.length());
+            Assertions.assertEquals(noteTitleUpd, noteTitleAfter);
+            Assertions.assertEquals(noteDescriptionUpd, noteDescAfter);
 
             // Test NoteDeletion
             doLogout();
@@ -405,7 +409,7 @@ class CloudStorageApplicationTests {
             WebElement deleteNoteButton = firstElement.findElement(By.className("note-delete-buttons"));
             deleteNoteButton.click();
 
-            webDriverWait = new WebDriverWait(driver, 2);
+            doGoToNotesTab();
             webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-table-body")));
 
             int numNotesAfter = getNotes().size();
