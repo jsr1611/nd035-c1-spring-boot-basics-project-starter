@@ -542,5 +542,34 @@ class CloudStorageApplicationTests {
 
         Assertions.assertNotEquals(url, urlAfter);
         Assertions.assertNotEquals(username, usernameAfter);
+
+
+        // test credential deletion
+
+        //check number of notes
+        numCredentialsBefore = getCredentials().size();
+        // get the title and description for the first note in the list
+        WebElement firstElement = getCredentials().get(0);
+
+        String firstCredentialUrl = firstElement.findElement(By.className("credential-url")).getText();
+        String firstCredentialUsername = firstElement.findElement(By.className("credential-username")).getText();
+
+        WebElement deleteCredentialButton = firstElement.findElement(By.className("credential-delete-buttons"));
+        deleteCredentialButton.click();
+
+        webDriverWait = new WebDriverWait(driver, 2);
+        webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-table-body")));
+
+        int numCredentialsAfter = getCredentials().size();
+
+        Assertions.assertEquals(numCredentialsBefore-1, numCredentialsAfter);
+
+        WebElement firstElementAfterDeletion = getCredentials().get(0);
+
+        String firstCredentialUrlAftDlt = firstElementAfterDeletion.findElement(By.className("credential-url")).getText();
+        String firstCredentialUsernameAftDlt = firstElementAfterDeletion.findElement(By.className("credential-username")).getText();
+
+        Assertions.assertNotEquals(firstCredentialUrl, firstCredentialUrlAftDlt);
+        Assertions.assertNotEquals(firstCredentialUsername, firstCredentialUsernameAftDlt);
     }
 }
