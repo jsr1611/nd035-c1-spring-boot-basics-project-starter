@@ -82,20 +82,20 @@ Your tech lead has done a thorough job developing HTML templates for the require
 - Your tech lead trusts you to do a good job, but testing is important whether you're an excel number-cruncher or a full-stack coding superstar! The QA team at Super*Duper*Drive carries out extensive user testing. Still, your tech lead wants you to write some simple Selenium tests to verify user-facing functionality and prove that your code is feature-complete before the testers get their hands on it.
 
 1. Write tests for user signup, login, and unauthorized access restrictions.
- - [ ] Write a test that verifies that an unauthorized user can only access the login and signup pages.
- - [ ] Write a test that signs up a new user, logs in, verifies that the home page is accessible, logs out, and verifies that the home page is no longer accessible. 
+ - [x] Write a test that verifies that an unauthorized user can only access the login and signup pages.
+ - [x] Write a test that signs up a new user, logs in, verifies that the home page is accessible, logs out, and verifies that the home page is no longer accessible. 
 
 
 2. Write tests for note creation, viewing, editing, and deletion.
- - [ ] Write a test that creates a note, and verifies it is displayed.
- - [ ] Write a test that edits an existing note and verifies that the changes are displayed.
- - [ ] Write a test that deletes a note and verifies that the note is no longer displayed.
+ - [x] Write a test that creates a note, and verifies it is displayed.
+ - [x] Write a test that edits an existing note and verifies that the changes are displayed.
+ - [x] Write a test that deletes a note and verifies that the note is no longer displayed.
 
 
 3. Write tests for credential creation, viewing, editing, and deletion.
- - [ ] Write a test that creates a set of credentials, verifies that they are displayed, and verifies that the displayed password is encrypted.
- - [ ] Write a test that views an existing set of credentials, verifies that the viewable password is unencrypted, edits the credentials, and verifies that the changes are displayed.
- - [ ] Write a test that deletes an existing set of credentials and verifies that the credentials are no longer displayed.
+ - [x] Write a test that creates a set of credentials, verifies that they are displayed, and verifies that the displayed password is encrypted.
+ - [x] Write a test that views an existing set of credentials, verifies that the viewable password is unencrypted, edits the credentials, and verifies that the changes are displayed.
+ - [x] Write a test that deletes an existing set of credentials and verifies that the credentials are no longer displayed.
 
 ## Final Tips and Tricks
 ### Password Security
@@ -109,7 +109,7 @@ String hashedPassword = hashService.getHashedValue(plainPassword, encodedSalt);
 return hashedPassword;
 ```
 
-- [ ] For storing credentials in the main part of the application, we can't hash passwords because it's a one-way operation. The user needs access to the unhashed password, after all! So instead, you should encrypt the passwords. Your tech lead provided you with a class called `EncryptionService` that can encrypt and decrypt passwords. When a user adds new credentials, encrypt the password before storing it in the database. When the user views those credentials, decrypt the password before displaying it. Here's a little code snippet on how to use `EncryptionService`:
+- [x] For storing credentials in the main part of the application, we can't hash passwords because it's a one-way operation. The user needs access to the unhashed password, after all! So instead, you should encrypt the passwords. Your tech lead provided you with a class called `EncryptionService` that can encrypt and decrypt passwords. When a user adds new credentials, encrypt the password before storing it in the database. When the user views those credentials, decrypt the password before displaying it. Here's a little code snippet on how to use `EncryptionService`:
 
 ```
 SecureRandom random = new SecureRandom();
