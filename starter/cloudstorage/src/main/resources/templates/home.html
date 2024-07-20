@@ -11,7 +11,8 @@
 <input id="page" th:value="${page}" type="hidden">
 <div class="container">
     <div id="logoutDiv">
-        <form action="#" method="POST" th:action="@{/logout}">
+        <form style="display: flex; justify-content: space-between; align-items: center;" action="#" method="POST" th:action="@{/logout}">
+            <h2>SuperDuperDrive</h2>
             <button class="btn btn-secondary float-right" type="submit">Logout</button>
         </form>
     </div>
