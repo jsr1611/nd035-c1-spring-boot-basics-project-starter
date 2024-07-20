@@ -196,7 +196,7 @@ class CloudStorageApplicationTests {
         // Create a test account
         doMockSignUp("Large File", "Test", "LFT", "123");
         doLogIn("LFT", "123");
-
+        doGoToFilesTab();
         // Try to upload an arbitrary large file
         WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
         String fileName = "upload5m.zip";
@@ -288,6 +288,13 @@ class CloudStorageApplicationTests {
         notesTab.click();
     }
 
+    private void doGoToFilesTab(){
+        WebDriverWait webDriverWait = new WebDriverWait(driver, 1);
+        // Go to notes tab
+        WebElement filesTab = driver.findElement(By.id("nav-files-tab"));
+        filesTab.click();
+    }
+
     private void doOpenNotesModal() {
         WebDriverWait webDriverWait = new WebDriverWait(driver, 1);
         // Go to notes tab
@@ -358,6 +365,7 @@ class CloudStorageApplicationTests {
             noteTitle = "To Do List Updated";
             noteDescription = "1. Write failing tests. \n2. Then implement API that passes those tests.\n3. Submit work on time!";
             doMockNoteCreation(noteTitle, noteDescription);
+
 
             WebElement lastNoteEl = getNotes().get(notes.size() - 1);
 
